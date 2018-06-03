@@ -183,7 +183,7 @@ public class ControllerCategoryRuleTest {
         JSONObject jsonObject = new JSONObject().put("description", "")
                 .put("IBAN", "NL89INGB0258025802")
                 .put("type", "deposit")
-                .put("categoryId", 1);
+                .put("categoryId", 2);
         given()
                 .header("X-session-ID", 1)
                 .body(jsonObject.toString())
@@ -203,7 +203,7 @@ public class ControllerCategoryRuleTest {
                 .jsonPath();
 
         Map<Object, Object> category = jsonPath.getMap("category");
-        assertEquals(1, category.get("id"));
+        assertEquals(2, category.get("id"));
         //Now we check if the category is applied on history
         jsonPath = given()
                 .param("session_id", 1)
