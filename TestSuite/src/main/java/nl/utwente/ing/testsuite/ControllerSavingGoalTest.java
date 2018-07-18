@@ -224,7 +224,7 @@ public class ControllerSavingGoalTest {
                 .assertThat()
                 .statusCode(201);
         JSONObject savingGoal = new JSONObject()
-                .put("name", "Weed-ul ala blanao")
+                .put("name", "something")
                 .put("goal", 3000)
                 .put("savePerMonth", 1500);
         given()
@@ -236,7 +236,7 @@ public class ControllerSavingGoalTest {
                 .assertThat()
                 .statusCode(201);
         transaction = new JSONObject()
-                .put("date", "2018-09-23T15:42:48.250")
+                .put("date", LocalDateTime.now().plusMonths(1).toString())
                 .put("amount", 5000)
                 .put("type", "deposit")
                 .put("externalIBAN", "NL67RABO4564561230")
@@ -259,7 +259,8 @@ public class ControllerSavingGoalTest {
                 .response()
                 .jsonPath();
         List<Object> list = jsonPath.getList("balance");
-        assertTrue((float) list.get(0) == 3000);
+        assertTrue((float) list.get(list.size() - 1) == 1500);
+        list = jsonPath.getList("id");
         jsonPath = given()
                 .param("session_id", 5)
                 .when()
@@ -269,8 +270,30 @@ public class ControllerSavingGoalTest {
                 .extract()
                 .response()
                 .jsonPath();
-        list = jsonPath.getList("balance");
-        assertTrue((float) list.get(list.size() - 1) == 4500);
+        List<Object> list1 = jsonPath.getList("balance");
+        assertTrue((float) list1.get(list1.size() - 1) == 6000);
+        list1 = jsonPath.getList("id");
+        given()
+                .param("session_id", 5)
+                .when()
+                .delete("/transactions/" + list1.get(list1.size() - 1))
+                .then()
+                .assertThat()
+                .statusCode(204);
+        given()
+                .param("session_id", 5)
+                .when()
+                .delete("/transactions/" + list1.get(list1.size() - 2))
+                .then()
+                .assertThat()
+                .statusCode(204);
+        given()
+                .param("session_id", 5)
+                .when()
+                .delete("/savingGoals/" + list.get(list.size() - 1))
+                .then()
+                .assertThat()
+                .statusCode(204);
     }
 
 }

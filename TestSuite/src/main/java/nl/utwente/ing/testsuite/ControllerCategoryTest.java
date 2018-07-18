@@ -358,6 +358,16 @@ public class ControllerCategoryTest {
 			put("/categories/" + 2).
 		then().
 			assertThat().statusCode(405);
+		//invalid body
+        given()
+                .header("X-session-ID", 1)
+                .body("something")
+                .when()
+                .put("/categories/1")
+                .then()
+                .assertThat()
+                .statusCode(405);
+
 
 	}
 

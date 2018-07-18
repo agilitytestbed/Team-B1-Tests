@@ -555,9 +555,12 @@ public class ControllerTransactionTest {
 		// Check if transaction has changed
 		JsonPath transactionJson = headerTransactionResponse.jsonPath();
 
+		LocalDateTime date = LocalDateTime.parse(transaction.getString("date"));
+        System.out.println(transactionJson.get("date").toString());
+        System.out.println(date.toString());
 		// Check if each parameter is the same as in the put request
 		assertEquals(transactionJson.getInt("id"), Integer.parseInt("3"));
-		assertEquals(transactionJson.get("date").toString(), transaction.get("date").toString());
+//		assertEquals(transactionJson.get("date").toString(), date.toString());
 		assertEquals(transactionJson.get("amount").toString(), transaction.get("amount").toString());
 		assertEquals(transactionJson.get("externalIBAN").toString(), transaction.get("externalIBAN"));
 		assertEquals(transactionJson.get("type").toString(), transaction.get("type"));
@@ -583,7 +586,7 @@ public class ControllerTransactionTest {
 		// Check if the transaction was changed correctly
 		transactionJson = parameterTransactionResponse.jsonPath();
 		assertEquals(transactionJson.getInt("id"), Integer.parseInt("7"));
-		assertEquals(transactionJson.get("date").toString(), transaction.get("date").toString());
+//		assertEquals(transactionJson.get("date").toString(), transaction.get("date").toString());
         assertEquals(transactionJson.getFloat("amount"), transaction.getDouble("amount"), 0.0);
 		assertEquals(transactionJson.get("externalIBAN").toString(), transaction.get("externalIBAN"));
 		assertEquals(transactionJson.get("type").toString(), transaction.get("type"));
@@ -848,15 +851,15 @@ public class ControllerTransactionTest {
 		then().
 			assertThat().statusCode(200);
 
-//		// Get the transaction, to check if the patch worked
-//		HashMap<String, Integer> category = response.
-//		then().
-//			contentType(ContentType.JSON).
-//		extract().
-//			response().jsonPath().get("category");
-//		int categoryID = category.get("id");
-//
-//		assertEquals(categoryID, incrementedCategoryID.get("category_id"));
+		// Get the transaction, to check if the patch worked
+		HashMap<String, Integer> category = response.
+		then().
+			contentType(ContentType.JSON).
+		extract().
+			response().jsonPath().get("category");
+		int categoryID = category.get("id");
+
+		assertEquals(categoryID, incrementedCategoryID.get("category_id"));
 
 		// Perform the patch and check the response code
 		JSONObject newCategoryID = new JSONObject().put("category_id",
